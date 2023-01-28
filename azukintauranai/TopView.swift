@@ -37,6 +37,8 @@ func playPoku() {
 
 struct TopView: View {
     @State var isShowView = false
+    @State var isCalendarView = false
+    
     
     var body: some View {
         NavigationStack() {
@@ -57,20 +59,34 @@ struct TopView: View {
                         .scaledToFill()
                         .frame(width: 350, height: 350)
                     
-                    Button(action: {
-                        isShowView = true
-                    }){
-                        Text("占う")
-                            .font(.largeTitle)
+                    HStack{
+                        Button(action: {
+                            isShowView = true
+                        }){
+                            Text("占う")
+                                .font(.largeTitle)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding(30)
+                        
+                        Button(action: {
+                            isCalendarView = true
+                        }){
+                            Text("過去の占い結果")
+                                .font(.largeTitle)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding(30)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .padding(30)
                     
                     Spacer()
                 }
                 
                 .navigationDestination(isPresented: $isShowView) {
                     ResultView()
+                }
+                .navigationDestination(isPresented: $isCalendarView) {
+                    CalendarView()
                 }
             }
         }

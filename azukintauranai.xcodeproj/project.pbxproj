@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A92E44DD2981491D00138BDD /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92E44DC2981491D00138BDD /* Calendar.swift */; };
 		A92FB500297B694D00586D0A /* const.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92FB4FF297B694D00586D0A /* const.swift */; };
 		A97C1A792964582F00ABEEFD /* ColorExtention.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97C1A782964582E00ABEEFD /* ColorExtention.swift */; };
 		A9E5BE192959CF8D006D7488 /* azukintauranaiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E5BE182959CF8D006D7488 /* azukintauranaiApp.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A92E44DC2981491D00138BDD /* Calendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calendar.swift; sourceTree = "<group>"; };
 		A92FB4FF297B694D00586D0A /* const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = const.swift; sourceTree = "<group>"; };
 		A97C1A782964582E00ABEEFD /* ColorExtention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtention.swift; sourceTree = "<group>"; };
 		A9E5BE152959CF8D006D7488 /* azukintauranai.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = azukintauranai.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -109,6 +111,7 @@
 				A9E5BE1E2959CF8E006D7488 /* Preview Content */,
 				A97C1A782964582E00ABEEFD /* ColorExtention.swift */,
 				A92FB4FF297B694D00586D0A /* const.swift */,
+				A92E44DC2981491D00138BDD /* Calendar.swift */,
 			);
 			path = azukintauranai;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9E5BE1B2959CF8D006D7488 /* TopView.swift in Sources */,
+				A92E44DD2981491D00138BDD /* Calendar.swift in Sources */,
 				A97C1A792964582F00ABEEFD /* ColorExtention.swift in Sources */,
 				A92FB500297B694D00586D0A /* const.swift in Sources */,
 				A9E5BE472959D907006D7488 /* ResultView.swift in Sources */,

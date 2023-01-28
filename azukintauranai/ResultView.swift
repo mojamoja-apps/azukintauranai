@@ -67,6 +67,9 @@ struct ResultView: View {
                                 default:
                                     break
                                 }
+                                
+                                // 結果を保存
+                                saveResult(resultValue: rnd)
                             }
                         
                         Text("【" + uranai_titles[rnd] + "】")
@@ -100,6 +103,19 @@ struct ResultView: View {
     }
 }
 
+func saveResult(resultValue: Int) {
+    // 結果を日付キーで保存
+    let today = Date()
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale(identifier: "ja_JP")
+    dateFormatter.dateStyle = .medium
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+      
+    let todayStr = dateFormatter.string(from: today)
+
+    UserDefaults.standard.set(String(resultValue), forKey: todayStr)
+    
+}
 
 struct ResultView_Previews: PreviewProvider {
     static var previews: some View {
