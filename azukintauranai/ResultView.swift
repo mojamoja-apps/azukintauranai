@@ -13,20 +13,20 @@ import Foundation
 struct ResultView: View {
     @State var isShowResultView = false
     @State var pokuCount: Int = 0
-    
+
     @State var rnd = 0
     @State var message_child_rnd = 0
-    
+
     @Environment(\.dismiss) var dismiss
-        
+
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+
     var body: some View {
         ZStack {
             Color.customBackgroundColor
                 .ignoresSafeArea()
             VStack {
-                
+
                 if !isShowResultView {
                     Image("calc")
                         .resizable()
@@ -67,20 +67,20 @@ struct ResultView: View {
                                 default:
                                     break
                                 }
-                                
+
                                 // 結果を保存
                                 saveResult(resultValue: rnd)
                             }
-                        
+
                         Text("【" + uranai_titles[rnd] + "】")
                             .font(.system(size: 30))
-                        
+
                         Text(uranai_messages[rnd][message_child_rnd])
                             .padding()
-                        
+
                         Spacer()
                             .padding(.bottom, 50)
-                        
+
                         Button(action: {
                             dismiss()
                         }){
@@ -89,7 +89,7 @@ struct ResultView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .padding(30)
-                        
+
                         Spacer()
                             .padding(.bottom, 50)
                     }
@@ -110,11 +110,11 @@ func saveResult(resultValue: Int) {
     dateFormatter.locale = Locale(identifier: "ja_JP")
     dateFormatter.dateStyle = .medium
     dateFormatter.dateFormat = "yyyy-MM-dd"
-      
+
     let todayStr = dateFormatter.string(from: today)
 
     UserDefaults.standard.set(String(resultValue), forKey: todayStr)
-    
+
 }
 
 struct ResultView_Previews: PreviewProvider {

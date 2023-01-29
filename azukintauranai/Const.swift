@@ -1,5 +1,5 @@
 //
-//  const.swift
+//  Const.swift
 //  azukintauranai
 //
 //  Created by 大塚匡平 on 2023/01/21.
@@ -15,7 +15,7 @@ let uranai_titles:[String] = [
     "凶",
     "大凶",
 ]
-    
+
 // 占い結果メッセージ
 let uranai_messages:[[String]] = [
 // 大吉
@@ -82,3 +82,5 @@ let uranai_messages:[[String]] = [
 
 ],
 ]
+
+

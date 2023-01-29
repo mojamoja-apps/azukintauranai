@@ -7,54 +7,90 @@
 
 import SwiftUI
 
+// 曜日
+let weekdays = Calendar.current.shortWeekdaySymbols
+
 struct CalendarDates: Identifiable {
     var id = UUID()
     var date: Date?
 }
 
+
+// 年月リスト配列を作成 今月からマイナス24ヶ月まで
+func getYMList() -> Array<String> {
+    let date = Date()
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale(identifier: "ja_JP")
+    dateFormatter.dateStyle = .medium
+    dateFormatter.dateFormat = "yyyy"
+
+    var yyyy = Int(dateFormatter.string(from: date))!
+
+    dateFormatter.locale = Locale(identifier: "ja_JP")
+    dateFormatter.dateStyle = .medium
+    dateFormatter.dateFormat = "MM"
+
+    var mm = Int(dateFormatter.string(from: date))!
+
+    var ymArray:[String] = []
+    for _ in 0..<24 {
+        ymArray += [String(yyyy) + "/" + String(format: "%02d", mm)]
+        mm = mm - 1
+        if mm == 0 {
+            mm = 12
+            yyyy = yyyy - 1
+        }
+    }
+    return ymArray
+}
+// UserDefaultから過去の結果を復元して返す
 func getKakoResult(targetDate: String) -> String {
+
     if let ret = UserDefaults.standard.string(forKey: targetDate) {
-        
         if let intret = Int(ret) {
             return uranai_titles[intret]
         }else{
-            return ""
+            return "-"
         }
     } else {
-        return ""
+        return "-"
     }
 }
 
 struct CalendarView: View {
-    
-    // 年
-    let year = Calendar.current.year(for: Date()) ?? 0
-    // 月
-    let month = Calendar.current.month(for: Date()) ?? 0
-    // 日付配列
-    let calendarDates = createCalendarDates(Date())
-    // 曜日
-    let weekdays = Calendar.current.shortWeekdaySymbols
     // グリッドアイテム
     let columns: [GridItem] = Array(repeating: .init(.fixed(40)), count: 7)
+
+    // 年月リスト
+    let ymList = getYMList()
+    @State private var selectedIndex = 0    // 選択値と連携するプロパティ
+    @State private var selectedYM = ""
+
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         ZStack{
             Color.customBackgroundColor
                 .ignoresSafeArea()
             VStack {
+                Text("過去の占い結果")
+                    .font(.system(size: 24))
+
                 // yyyy/MM
                 HStack{
-                    Text("<")
-                        .font(.system(size: 30))
-                    Spacer().frame(width: 30)
-                    Text(String(format: "%04d/%02d", year, month))
-                        .font(.system(size: 24))
-                    Spacer().frame(width: 30)
-                    Text(">")
-                        .font(.system(size: 30))
+                    Picker(selection: $selectedIndex, label: Text("年月を選択")) {
+                        ForEach (0..<ymList.count, id: \.self) { index in
+                            Text(ymList[index])
+                        }
+                    }
+                    .onChange(of: selectedIndex) { newValue in
+                        print("changet to \(ymList[newValue])")
+                        selectedYM = ymList[newValue]
+                    }
+                    //Text(String(format: "%04d/%02d", year, month))
+                    //    .font(.system(size: 24))
                 }
-                
+
                 // 曜日
                 HStack {
                     ForEach(weekdays, id: \.self) { weekday in
@@ -71,12 +107,14 @@ struct CalendarView: View {
                                 .frame(width: 40, height: 40, alignment: .center)
                                 .foregroundColor(Color.black)
                         }
-                        
+
                     }
                 }
-                
+
                 // カレンダー
                 LazyVGrid(columns: columns, spacing: 20) {
+                    let calendarDates = createCalendarDates(ymstr: selectedYM)
+
                     ForEach(calendarDates) { calendarDates in
                         if let date = calendarDates.date, let day = Calendar.current.day(for: date) {
                             VStack{
@@ -90,7 +128,7 @@ struct CalendarView: View {
                                     Text("\(day)")
                                         .foregroundColor(Color.black)
                                 }
-                                
+
                                 Text(
                                     getKakoResult(targetDate: Calendar.current.dateStr(for: date))
                                 )
@@ -100,6 +138,21 @@ struct CalendarView: View {
                         }
                     }
                 }
+
+                Spacer()
+                    .padding(.bottom, 20)
+
+                Button(action: {
+                    dismiss()
+                }){
+                    Text("戻る")
+                        .font(.largeTitle)
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(30)
+
+                Spacer()
+                    .padding(.bottom, 20)
             }
             .frame(width: 400, height: 400, alignment: .center)
         }
@@ -114,36 +167,36 @@ extension Calendar {
         let comps = dateComponents([.month, .year], from: date)
         return self.date(from: comps)
     }
-    
+
     /// 今月の日数を取得する
     /// - Parameter date: 対象日
     /// - Returns: 日数
     func daysInMonth(for date:Date) -> Int? {
         return range(of: .day, in: .month, for: date)?.count
     }
-    
+
     /// 今月の週数を取得する
     /// - Parameter date: 対象日
     /// - Returns: 週数
     func weeksInMonth(for date:Date) -> Int? {
         return range(of: .weekOfMonth, in: .month, for: date)?.count
     }
-    
+
     func year(for date: Date) -> Int? {
         let comps = dateComponents([.year], from: date)
         return comps.year
     }
-    
+
     func month(for date: Date) -> Int? {
         let comps = dateComponents([.month], from: date)
         return comps.month
     }
-    
+
     func day(for date: Date) -> Int? {
         let comps = dateComponents([.day], from: date)
         return comps.day
     }
-    
+
     func weekday(for date: Date) -> Int? {
         let comps = dateComponents([.weekday], from: date)
         return comps.weekday
@@ -161,9 +214,18 @@ extension Calendar {
 /// カレンダー表示用の日付配列を取得
 /// - Parameter date: カレンダー表示の対象日
 /// - Returns: 日付配列
-func createCalendarDates(_ date: Date) -> [CalendarDates] {
+func createCalendarDates(ymstr: String) -> [CalendarDates] {
     var days = [CalendarDates]()
-    
+
+    let date : Date
+    if ymstr == "" {
+        date = Date()
+    } else {
+        let ccc = Calendar(identifier: .gregorian)
+        let arr:[String] = ymstr.components(separatedBy: "/")
+        date = ccc.date(from: DateComponents(year: Int(arr[0]), month: Int(arr[1]), day: 1))!
+    }
+
     // 今月の開始日
     let startOfMonth = Calendar.current.startOfMonth(for: date)
     // 今月の日数
@@ -181,12 +243,12 @@ func createCalendarDates(_ date: Date) -> [CalendarDates] {
           let firstDate = firstDay.date, let lastDate = lastDay.date,
           let firstDateWeekday = Calendar.current.weekday(for: firstDate),
           let lastDateWeekday = Calendar.current.weekday(for: lastDate) else { return [] }
-    
+
     // 初週のオフセット日数
     let firstWeekEmptyDays = firstDateWeekday - 1
     // 最終週のオフセット日数
     let lastWeekEmptyDays = 7 - lastDateWeekday
-    
+
     // 初週のオフセットを追加
     for _ in 0..<firstWeekEmptyDays {
         days.insert(CalendarDates(date: nil), at: 0)
@@ -196,7 +258,7 @@ func createCalendarDates(_ date: Date) -> [CalendarDates] {
     for _ in 0..<lastWeekEmptyDays {
         days.append(CalendarDates(date: nil))
     }
-    
+
     return days
 }
 

@@ -38,50 +38,72 @@ func playPoku() {
 struct TopView: View {
     @State var isShowView = false
     @State var isCalendarView = false
-    
-    
+
+    @Environment(\.openURL) var openURL
+
     var body: some View {
         NavigationStack() {
             ZStack {
-
                 Color.customBackgroundColor
                     .ignoresSafeArea()
                 VStack {
-                    Spacer()
-                    
-                    Image("title")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 350, height: 100)
-                    
-                    Image("top")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 350, height: 350)
-                    
-                    HStack{
-                        Button(action: {
-                            isShowView = true
-                        }){
-                            Text("占う")
-                                .font(.largeTitle)
+                    ScrollView {
+                        Spacer()
+
+                        Image("title")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 350, height: 100)
+
+                        Image("top")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 350, height: 350)
+
+                        VStack{
+                            Button(action: {
+                                isShowView = true
+                            }){
+                                Text("占う")
+                                    .font(.system(size:20))
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding(5)
+
+                            Button(action: {
+                                isCalendarView = true
+                            }){
+                                Text("過去の占い結果")
+                                    .font(.system(size:20))
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding(5)
+
+                            Button(action: {
+                                openURL(URL(string: "http://chigiramio.com/")!)
+                            }){
+                                Image(systemName: "link")
+                                Text("イラスト ちぎらみお")
+                                    .font(.system(size:20))
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding(5)
+
+                            Button(action: {
+                                openURL(URL(string: "https://mojamoja-apps.com")!)
+                            }){
+                                Image(systemName: "link")
+                                Text("開発 mojamoja apps")
+                                    .font(.system(size:20))
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding(5)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .padding(30)
-                        
-                        Button(action: {
-                            isCalendarView = true
-                        }){
-                            Text("過去の占い結果")
-                                .font(.largeTitle)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .padding(30)
+
+                        Spacer()
                     }
-                    
-                    Spacer()
                 }
-                
+
                 .navigationDestination(isPresented: $isShowView) {
                     ResultView()
                 }
@@ -92,6 +114,17 @@ struct TopView: View {
         }
         .onAppear() {
             playMuon()
+// テスト結果を作る
+//            UserDefaults.standard.set("0", forKey: "2023-01-01")
+//            UserDefaults.standard.set("1", forKey: "2023-01-02")
+//            UserDefaults.standard.set("2", forKey: "2023-01-03")
+//            UserDefaults.standard.set("3", forKey: "2023-01-06")
+//            UserDefaults.standard.set("4", forKey: "2023-01-10")
+//            UserDefaults.standard.set("0", forKey: "2023-01-11")
+//            UserDefaults.standard.set("1", forKey: "2023-01-13")
+//            UserDefaults.standard.set("2", forKey: "2023-01-20")
+//            UserDefaults.standard.set("3", forKey: "2023-01-21")
+//            UserDefaults.standard.set("4", forKey: "2023-01-22")
         }
     }
 }
