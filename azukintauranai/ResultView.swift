@@ -114,7 +114,6 @@ func saveResult(resultValue: Int) {
     let todayStr = dateFormatter.string(from: today)
 
     UserDefaults.standard.set(String(resultValue), forKey: todayStr)
-
 }
 
 struct ResultView_Previews: PreviewProvider {

@@ -36,8 +36,9 @@ func playPoku() {
 }
 
 struct TopView: View {
-    @State var isShowView = false
+    @State var isResutlView = false
     @State var isCalendarView = false
+    @State var isSettingView = false
 
     @Environment(\.openURL) var openURL
 
@@ -62,7 +63,7 @@ struct TopView: View {
 
                         VStack{
                             Button(action: {
-                                isShowView = true
+                                isResutlView = true
                             }){
                                 Text("占う")
                                     .font(.system(size:20))
@@ -74,6 +75,15 @@ struct TopView: View {
                                 isCalendarView = true
                             }){
                                 Text("過去の占い結果")
+                                    .font(.system(size:20))
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .padding(5)
+
+                            Button(action: {
+                                isSettingView = true
+                            }){
+                                Text("通知設定")
                                     .font(.system(size:20))
                             }
                             .buttonStyle(.borderedProminent)
@@ -104,11 +114,14 @@ struct TopView: View {
                     }
                 }
 
-                .navigationDestination(isPresented: $isShowView) {
+                .navigationDestination(isPresented: $isResutlView) {
                     ResultView()
                 }
                 .navigationDestination(isPresented: $isCalendarView) {
                     CalendarView()
+                }
+                .navigationDestination(isPresented: $isSettingView) {
+                    SettingView()
                 }
             }
         }
