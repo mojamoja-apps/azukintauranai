@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct azukintauranaiApp: App {
+    // 初期処理を行う
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

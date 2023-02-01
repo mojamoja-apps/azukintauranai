@@ -40,8 +40,6 @@ struct TopView: View {
     @State var isCalendarView = false
     @State var isSettingView = false
 
-    @Environment(\.openURL) var openURL
-
     var body: some View {
         NavigationStack() {
             ZStack {
@@ -66,48 +64,28 @@ struct TopView: View {
                                 isResutlView = true
                             }){
                                 Text("占う")
-                                    .font(.system(size:20))
+                                    .font(.system(size:25))
                             }
                             .buttonStyle(.borderedProminent)
-                            .padding(5)
+                            .padding(3)
 
                             Button(action: {
                                 isCalendarView = true
                             }){
                                 Text("過去の占い結果")
-                                    .font(.system(size:20))
+                                    .font(.system(size:25))
                             }
                             .buttonStyle(.borderedProminent)
-                            .padding(5)
+                            .padding(3)
 
                             Button(action: {
                                 isSettingView = true
                             }){
-                                Text("通知設定")
-                                    .font(.system(size:20))
+                                Text("設定")
+                                    .font(.system(size:25))
                             }
                             .buttonStyle(.borderedProminent)
-                            .padding(5)
-
-                            Button(action: {
-                                openURL(URL(string: "http://chigiramio.com/")!)
-                            }){
-                                Image(systemName: "link")
-                                Text("イラスト ちぎらみお")
-                                    .font(.system(size:20))
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .padding(5)
-
-                            Button(action: {
-                                openURL(URL(string: "https://mojamoja-apps.com")!)
-                            }){
-                                Image(systemName: "link")
-                                Text("開発 mojamoja apps")
-                                    .font(.system(size:20))
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .padding(5)
+                            .padding(3)
                         }
 
                         Spacer()

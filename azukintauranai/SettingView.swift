@@ -10,28 +10,15 @@ import AVFoundation
 import Combine
 import Foundation
 
-// プッシュ通知
-func sendNotificationRequest(){
-    let content = UNMutableNotificationContent()
-    content.title = "今日の運勢を"
-    content.body = "占ってみよう！そーれそーれ！"
-    content.sound = UNNotificationSound.default
-    //これではうまく鳴らなかった content.sound = UNNotificationSound.init(named: UNNotificationSoundName(: "poku"))
 
-    var dateComponentsDay = DateComponents()
-    dateComponentsDay.hour = 23
-    dateComponentsDay.minute = 56
-
-    //let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 60, repeats: true)
-    let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponentsDay, repeats: true)
-
-    let request = UNNotificationRequest(identifier: "通知No.1", content: content, trigger: trigger)
-    UNUserNotificationCenter.current().add(request)
-}
 
 struct SettingView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var pushflag = true
+    @State private var pushflg = true
+    @State private var selectedIndex = 0    // 選択値と連携するプロパティ
+    @Environment(\.openURL) var openURL
+
+    let hourList = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
 
     var body: some View {
         NavigationStack() {
@@ -40,23 +27,77 @@ struct SettingView: View {
                     .ignoresSafeArea()
                 VStack {
                     Form {
-                        Toggle(isOn: $pushflag) {
-                            //Text(pushflag ? "プッシュ通知" : "OFF")
-                            Text("お知らせの通知")
-                        }
-                        .onChange(of: pushflag) { newValue in
-                            if (newValue) {
-                                // プッシュ通知登録
-                                sendNotificationRequest()
-                            } else {
-                                // プッシュ通知削除
+                        Section {
+                            Toggle(isOn: $pushflg) {
+                                Text("お知らせの通知")
                             }
-                            UserDefaults.standard.set(pushflag, forKey: "pushflag")
+                            .onChange(of: pushflg) { newValue in
+                                // ユーザーデフォルトを変更
+                                UserDefaults.standard.set(newValue, forKey: "pushflg")
+
+                                if (newValue) {
+                                    // プッシュ通知登録
+                                    sendNotificationRequest()
+                                } else {
+                                    // プッシュ通知削除
+                                    deleteNotificationRequest()
+                                }
+                            }
+                            .onAppear() {
+                                // トグルの初期値設定
+                                pushflg = savedPushFlg
+                            }
+                            
+                            Picker(selection: $selectedIndex, label: Text("通知時間")) {
+                                ForEach (0..<hourList.count, id: \.self) { index in
+                                    Text(String(hourList[index]) + "時")
+                                }
+                            }
+                            .onChange(of: selectedIndex) { newValue in
+                                // ユーザーデフォルトを変更
+                                UserDefaults.standard.set(newValue, forKey: "pushhour")
+                                // グローバル変数も上書き
+                                savedHour = newValue
+
+                                // プッシュ通知オンの場合は プッシュ通知設定を変更する
+                                if (pushflg) {
+                                    // プッシュ通知登録
+                                    sendNotificationRequest()
+                                }
+                            }
+                            .onAppear() {
+                                // ピッカーの初期値設定
+                                selectedIndex = savedHour
+                            }
+                        } header: {
+                            Text("通知設定")
                         }
-                        .onAppear() {
-                            // トグルの初期値設定
-                            let hoge = UserDefaults.standard.bool(forKey: "pushflag")
-                            pushflag = hoge
+                        
+                        Section {
+                            Link(destination: URL(string: "http://chigiramio.com/")!) {
+                                HStack {
+                                    Text("イラスト ちぎらみお")
+                                        .foregroundColor(.primary)
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(Font.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.secondary)
+                                        .opacity(0.5)
+                                }
+                            }
+                            Link(destination: URL(string: "https://mojamoja-apps.com")!) {
+                                HStack {
+                                    Text("開発 mojamoja apps")
+                                        .foregroundColor(.primary)
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(Font.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.secondary)
+                                        .opacity(0.5)
+                                }
+                            }
+                        } header: {
+                            Text("リンク")
                         }
                     }
                 }
